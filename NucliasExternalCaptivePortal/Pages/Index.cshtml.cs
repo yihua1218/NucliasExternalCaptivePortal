@@ -17,6 +17,8 @@ namespace NucliasExternalCaptivePortal.Pages
         public StringValues ApMac;
         public StringValues Mauth;
         public StringValues LoginResult;
+        public StringValues DefaultUserName = "user1";
+        public StringValues DefaultPassword = "password";
         public StringValues RadiusUserName;
         public StringValues RadiusPassword;
 

@@ -12,21 +12,28 @@
             (data) => {
                 if (data) {
                     countdown = 5;
-                    $('#loginResult').html("Login success.");
-                    $('#radiusUserName').html(data.radiusUserName);
-                    $('#username').val(data.radiusUserName);
-                    $('#radiusPassword').html(data.radiusPassword);
-                    $('#password').val(data.radiusPassword);
-                    $('#success_url').val(data.successUrl);
-                    $('#radiusLoginForm').attr('action', data.loginUrl);
-                    setTimeout(function () { $('#radiusLoginForm').submit(); }, 5000);
-                    interval = setInterval(function () { countdown -= 1; $('#countdown').html(countdown); if (countdown <= 0) { interval.stop(); } }, 1000);
+                    if (data.status === 'OK') {
+                        $('#loginResult').html("Login success.");
+                        $('#radiusUserName').html(data.radiusUserName);
+                        $('#username').val(data.radiusUserName);
+                        $('#radiusPassword').html(data.radiusPassword);
+                        $('#password').val(data.radiusPassword);
+                        $('#success_url').val(data.successUrl);
+                        $('#radiusLoginForm').attr('action', data.loginUrl);
+                        setTimeout(function () { $('#radiusLoginForm').submit(); }, 5000);
+                        interval = setInterval(function () { countdown -= 1; $('#countdown').html(countdown); if (countdown <= 0) { interval.stop(); } }, 1000);
+                    } else {
+                        $('#loginResult').html("Login success.");
+                    }
                 } else {
                     $('#loginResult').html("Login fail.");
                 }
                 
                 
-            }, 'json');
+            }, 'json')
+            .fail(() => {
+                $('#loginResult').html("Login fail.");
+            });
     }
 </script>
 <div class="text-center">
@@ -70,12 +77,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-4"><span class="float-right">Username: user1</span></div>
-                <div class="col-8"><input type="text" name="UserName" value="user1" class="float-left" /></div>
+                <div class="col-4"><span class="float-right">Username:</span></div>
+                <div class="col-8"><input type="text" name="UserName" value="@Model.DefaultUserName" class="float-left" /></div>
             </div>
             <div class="row">
-                <div class="col-4"><span class="float-right">Password: password</span></div>
-                <div class="col-8"><input type="password" name="Password" value="password" class="float-left" /></div>
+                <div class="col-4"><span class="float-right">Password:</span></div>
+                <div class="col-8"><input type="password" name="Password" value="@Model.DefaultPassword" class="float-left" /></div>
             </div>
             <div class="row">
                 <div class="col-4"></div>

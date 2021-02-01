@@ -66,15 +66,32 @@ namespace NucliasExternalCaptivePortal
                     var successUrl = form["success_url"][0];
                     System.Console.WriteLine($"successUrl is {successUrl}");
 
-                    context.Response.StatusCode = StatusCodes.Status200OK;
-   
-                    await context.Response.WriteAsJsonAsync(new {
-                        Status = "OK",
-                        RadiusUserName = "radius_user1",
-                        RadiusPassword = "radius_password",
-                        LoginUrl = loginUrl,
-                        SuccessUrl = successUrl,
-                    });
+                    if (userName == "user1" && password == "password")
+                    {
+                        context.Response.StatusCode = StatusCodes.Status200OK;
+                        await context.Response.WriteAsJsonAsync(new
+                        {
+                            Status = "OK",
+                            RadiusUserName = "radius_user1",
+                            RadiusPassword = "radius_password",
+                            LoginUrl = loginUrl,
+                            SuccessUrl = successUrl,
+                        });
+                    } else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        await context.Response.WriteAsJsonAsync(new
+                        {
+                            Status = "FAIL",
+                            RadiusUserName = "",
+                            RadiusPassword = "",
+                            LoginUrl = "",
+                            SuccessUrl = "",
+                        });
+                    }
+                    
+
+
                 });
             });
         }
