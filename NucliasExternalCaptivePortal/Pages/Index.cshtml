@@ -1,10 +1,118 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Nuclias External Captive Portal";
 }
 
+<script type="text/javascript">
+    let countdown = 5;
+    let interval = null;
+    function login() {
+        $.post('api/login', $('#loginForm').serialize(),
+            (data) => {
+                if (data) {
+                    countdown = 5;
+                    $('#loginResult').html("Login success.");
+                    $('#radiusUserName').html(data.radiusUserName);
+                    $('#username').val(data.radiusUserName);
+                    $('#radiusPassword').html(data.radiusPassword);
+                    $('#password').val(data.radiusPassword);
+                    $('#success_url').val(data.successUrl);
+                    $('#radiusLoginForm').attr('action', data.loginUrl);
+                    setTimeout(function () { $('#radiusLoginForm').submit(); }, 5000);
+                    interval = setInterval(function () { countdown -= 1; $('#countdown').html(countdown); if (countdown <= 0) { interval.stop(); } }, 1000);
+                } else {
+                    $('#loginResult').html("Login fail.");
+                }
+                
+                
+            }, 'json');
+    }
+</script>
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
+    <form id="loginForm">
+        <div class="container">
+            <div class="row">
+                <div class="col"><h2>1. Information get from AP</h2></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Continue URL:</span></div>
+                <div class="col-8"><span class="float-left">@Model.ContinueUrl</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Login URL:</span></div>
+                <div class="col-8"><span class="float-left">@Model.LoginUrl</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Logout URL:</span></div>
+                <div class="col-8"><span class="float-left">@Model.LogoutUrl</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">AP Name:</span></div>
+                <div class="col-8"><span class="float-left">@Model.ApName</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">AP Tags:</span></div>
+                <div class="col-8"><span class="float-left">@Model.ApTags</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">AP MAC:</span></div>
+                <div class="col-8"><span class="float-left">@Model.ApMac</span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">MAUTH:</span></div>
+                <div class="col-8"><span class="float-left">@Model.Mauth</span></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h2>2. Web Server User Login</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Username: user1</span></div>
+                <div class="col-8"><input type="text" name="UserName" value="user1" class="float-left" /></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Password: password</span></div>
+                <div class="col-8"><input type="password" name="Password" value="password" class="float-left" /></div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-8">
+                    <input type="hidden" name="success_url" value="@Model.ContinueUrl" />
+                    <input type="hidden" name="login_url" value="@Model.LoginUrl" />
+                    <input type="hidden" name="logout_url" value="@Model.LogoutUrl" />
+                    <input type="hidden" name="mauth" value="@Model.Mauth" />
+                    <button type="button" class="float-left" onclick="login()">Login</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-8"><span id="loginResult" class="float-left">@Model.LoginResult</span></div>
+            </div>
+        </div>
+    </form>
+    <form id="radiusLoginForm" action="" method="post">
+        <input id="username" type="hidden" name="username" value="" />
+        <input id="password" type="hidden" name="password" value="" />
+        <input id="success_url" type="hidden" name="success_url" value="" />
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h2>3. RADIUS Login to AP in <span id="countdown">5</span> seconds</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Username:</span></div>
+                <div class="col-8"><span class="float-left" id="radiusUserName"></span></div>
+            </div>
+            <div class="row">
+                <div class="col-4"><span class="float-right">Password:</span></div>
+                <div class="col-8"><span class="float-left" id="radiusPassword"></span></div>
+            </div>
+        </div>
+    </form>
+
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NucliasExternalCaptivePortal
 {
@@ -16,6 +19,7 @@ namespace NucliasExternalCaptivePortal
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            System.Console.WriteLine($"RuntimeInformation.FrameworkDescription: {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
         }
 
         public IConfiguration Configuration { get; }
@@ -50,6 +54,28 @@ namespace NucliasExternalCaptivePortal
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapPost("api/login", async context =>
+                {
+                    var form = await context.Request.ReadFormAsync();
+                    var userName = form["UserName"][0];
+                    System.Console.WriteLine($"userName is {userName}");
+                    var password = form["Password"][0];
+                    System.Console.WriteLine($"password is {password}");
+                    var loginUrl = form["login_url"][0];
+                    System.Console.WriteLine($"loginUrl is {loginUrl}");
+                    var successUrl = form["success_url"][0];
+                    System.Console.WriteLine($"successUrl is {successUrl}");
+
+                    context.Response.StatusCode = StatusCodes.Status200OK;
+   
+                    await context.Response.WriteAsJsonAsync(new {
+                        Status = "OK",
+                        RadiusUserName = "radius_user1",
+                        RadiusPassword = "radius_password",
+                        LoginUrl = loginUrl,
+                        SuccessUrl = successUrl,
+                    });
+                });
             });
         }
     }
